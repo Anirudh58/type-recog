@@ -1,0 +1,89 @@
+<html>
+    <head>
+        <title>TypeRec</title>
+        <script src="javascripts/angular.js"></script>
+        <script src="javascripts/chirpApp.js"></script>
+        <link rel="stylesheet" href="stylesheets/bootstrap.min.css">
+        <link rel="stylesheet" href="stylesheets/style.css">
+    </head>
+
+    <body ng-app="trApp">
+        <div id="main" class="container">
+            <nav class="navbar-fluid navbar-default navbar-fixed-top">
+                <div class="container">
+                    <a class="navbar-brand" href="#"> Typing Recognition! </a>
+                </div>
+            </nav>
+
+            <div class="row">
+                <div class="col-md-offset-3 col-md-6">
+                    <h2><center> Sample text </center></h2>
+                    <h3 class="testtext"> pumas are large, cat like animals that are found in america. when reports
+                        came into london zoo that a wild puma had been spotted forty five miles
+                        south of london, they were not taken seriously. </h3>
+                </div>
+            </div>
+
+            <br><br>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <h2> <center> Contribute. </center></h2>
+
+                    <form>
+                        <div class="form-group">
+                            <label for="inputName">Name</label>
+                            <input type="text" class="form-control" id="inputName" placeholder="Name">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="test1">Test 1</label>
+                            <textarea type="text" class="form-control" id="test1" rows="4"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="test2">Test 2</label>
+                            <textarea type="text" class="form-control" id="test2" rows="4"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="test3">Test 3</label>
+                            <textarea type="text" class="form-control" id="test3" rows="4"></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-default"> Submit</button>
+                    </form>
+
+                </div>
+
+                <div class="col-md-4">
+                    <h2> <center> Predict. </center></h2>
+
+                    <div class="form-group">
+                        <label for="test1">Test</label>
+                        <textarea type="text" class="form-control" id="test1" rows="4"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-default"> Submit</button>
+                </div>
+
+                <div class="col-md-4">
+                    <h2> <center> Check. </center></h2>
+
+                    <div class="form-group">
+                        <label for="inputName">Name</label>
+                        <input type="text" class="form-control" id="inputName" placeholder="Name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="test1">Test</label>
+                        <textarea type="text" class="form-control" id="test1" rows="4"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-default"> Submit</button>
+
+                </div>
+            </div>
+
+        </div>
+    </body>

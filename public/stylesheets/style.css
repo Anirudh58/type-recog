@@ -1,0 +1,17 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+h3 {
+  color: black;
+  text-shadow: -1px 0 gray, 0 1px gray, 1px 0 gray, 0 -1px gray;
+  border-style: solid;
+  border-width: 5px;
+  padding: 20px;
+  border-color: black;
+}

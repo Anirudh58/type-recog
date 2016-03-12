@@ -1,13 +1,15 @@
-<html>
+<html ng-app="trApp">
     <head>
         <title>TypeRec</title>
         <script src="javascripts/angular.js"></script>
-        <script src="javascripts/chirpApp.js"></script>
+        <script src="javascripts/jquery.min.js"></script>
+        <script src="javascripts/machine_learning.min.js"></script>
+        <script src="javascripts/trApp.js"></script>
         <link rel="stylesheet" href="stylesheets/bootstrap.min.css">
         <link rel="stylesheet" href="stylesheets/style.css">
     </head>
 
-    <body ng-app="trApp">
+    <body ng-controller="MainController">
         <div id="main" class="container">
             <nav class="navbar-fluid navbar-default navbar-fixed-top">
                 <div class="container">
@@ -60,8 +62,8 @@
                     <h2> <center> Predict. </center></h2>
 
                     <div class="form-group">
-                        <label for="test1">Test</label>
-                        <textarea type="text" class="form-control" id="test1" rows="4"></textarea>
+                        <label for="test">Test</label>
+                        <textarea type="text" class="form-control" id="test" rows="4"></textarea>
                     </div>
 
                     <button type="submit" class="btn btn-default"> Submit</button>
@@ -71,13 +73,13 @@
                     <h2> <center> Check. </center></h2>
 
                     <div class="form-group">
-                        <label for="inputName">Name</label>
-                        <input type="text" class="form-control" id="inputName" placeholder="Name">
+                        <label for="checkName">Name</label>
+                        <input type="text" class="form-control" id="checkName" placeholder="Name">
                     </div>
 
                     <div class="form-group">
-                        <label for="test1">Test</label>
-                        <textarea type="text" class="form-control" id="test1" rows="4"></textarea>
+                        <label for="checkTest">Test</label>
+                        <textarea type="text" class="form-control" id="checkTest" rows="4"></textarea>
                     </div>
 
                     <button type="submit" class="btn btn-default"> Submit</button>

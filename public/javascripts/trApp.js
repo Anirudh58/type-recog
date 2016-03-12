@@ -5,28 +5,40 @@ app.controller('MainController', function($scope){
     var textData2=[], updone2=true, firstTime2=true, currentTime2;
     var textData3=[], updone3=true, firstTime3=true, currentTime3;
 
+    var testText="pumas are large cat like animals that are found in america when reports came into london zoo that a wild puma had been spotted forty five miles south of london they were not taken seriously";
+
+    var i=0;
+
     $('#test1').keydown(function(evt) {
-        if(updone1){
-            updone1=false;
-            if(evt.keyCode == 13) { // ignore enter
-                console.log("ENTER ignored");
-                return;
-            }
-            if(firstTime1){
-                currentTime1 = evt.timeStamp;
-                firstTime1=false;
-            }
-            textData1.push({"scancode":evt.which, "timestamp":(evt.timeStamp-currentTime1)});
 
-            $('#test1').one("keyup", function(e){
-                console.log('key down' + evt.which);
-                console.log('key up ' + e.which);
-                console.log(e.which, ' pressed for time ', e.timeStamp - evt.timeStamp);
+        if(testText.charCodeAt(i)-32 == evt.which || (testText[i]==' ' && evt.which == 32)){
+            if(updone1){
+                updone1=false;
+                if(evt.keyCode == 13) { // ignore enter
+                    console.log("ENTER ignored");
+                    return;
+                }
 
-                textData1[textData1.length-1].keyholdtime = e.timeStamp - evt.timeStamp;
-                updone1=true;
-            });
+
+                if(firstTime1){
+                    currentTime1 = evt.timeStamp;
+                    firstTime1=false;
+                }
+
+                textData1.push({"scancode":evt.which, "timestamp":(evt.timeStamp-currentTime1)});
+
+                $('#test1').one("keyup", function(e){
+                    console.log('key down' + evt.which);
+                    console.log('key up ' + e.which);
+                    console.log(e.which, ' pressed for time ', e.timeStamp - evt.timeStamp);
+
+                    textData1[textData1.length-1].keyholdtime = e.timeStamp - evt.timeStamp;
+                    updone1=true;
+                });
+            }
+            i++;
         }
+
 
 
     });
@@ -88,14 +100,14 @@ app.controller('MainController', function($scope){
         console.log(textData1);
         console.log(textData2);
         console.log(textData3);
+
+
     });
 
 
 });
 
-
-/*
-var data =[['slashdot','USA','yes',18],
+/*var data =[['slashdot','USA','yes',18],
     ['google','France','yes',23],
     ['digg','USA','yes',24],
     ['kiwitobes','France','yes',23],
@@ -125,5 +137,4 @@ dt.build();
 console.log("Classify : ", dt.classify(['(direct)','USA','yes',5]));
 
 dt.prune(1.0); // 1.0 : mingain.
-dt.print();
-*/
+dt.print();*/

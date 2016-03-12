@@ -127,7 +127,15 @@ app.controller('MainController', function($scope){
         console.log(textData2);
         console.log(textData3);
 
+        //get elapse time of each n-gram
+        var nGrams1Elap=[];
+        console.log(textData1.length);
+        for(var i=0; i<textData1.length-3;i++){
+            nGrams1Elap.push(textData1[i+3].timestamp - textData1[i].timestamp);
+        }
+        nGrams1Elap.push(textData1[i+2].timestamp + textData1[i+2].keyholdtime - textData1[i].timestamp);
 
+        console.log(nGrams1Elap);
     });
 
 

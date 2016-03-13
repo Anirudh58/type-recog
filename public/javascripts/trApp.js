@@ -1,9 +1,65 @@
 var app = angular.module('trApp', []);
 
-app.controller('MainController', function($scope){
+
+app.factory('MainFactory', ['$http', function($http){
+
+    var getAllPatterns = function(){
+
+        return $http({
+            method: 'GET',
+            url: '/users/patterns',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            transformRequest: function(obj) {
+                var str = [];
+                for(var p in obj)
+                    str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                return str.join("&");
+            }
+            })
+            .success(function(json) {
+                return json;
+            })
+            .error(function(err) {
+                return err;
+            });
+    };
+
+
+    var postPatterns = function(name, data){
+
+        return $http({
+            method: 'POST',
+            url: '/users/patterns',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            transformRequest: function(obj) {
+                var str = [];
+                for(var p in obj)
+                    str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                return str.join("&");
+            },
+            data: {name: name, pattern: data}
+            })
+            .success(function(json) {
+                return json;
+            })
+            .error(function(err) {
+                return err;
+            });
+    };
+
+    return {
+        getAllPatterns: getAllPatterns,
+        postPatterns: postPatterns
+    };
+
+}]);
+
+app.controller('MainController', ['MainFactory', function(MainFactory, $scope){
     var textData1=[], firstTime1=true, currentTime1;
     var textData2=[], firstTime2=true, currentTime2;
     var textData3=[], firstTime3=true, currentTime3;
+
+    var dataSet1=[], dataSet2=[], dataSet3=[];
 
     var data=[];
     var result=[];
@@ -186,35 +242,48 @@ app.controller('MainController', function($scope){
         console.log(nGrams2Lat);
         console.log(nGrams3Lat);
 
-        var dataSet1 = createDataSet(nGrams1Elapse, nGrams1Key, nGrams1Lat);
-        var dataSet2 = createDataSet(nGrams2Elapse, nGrams2Key, nGrams2Lat);
-        var dataSet3 = createDataSet(nGrams3Elapse, nGrams3Key, nGrams3Lat);
+        dataSet1 = createDataSet(nGrams1Elapse, nGrams1Key, nGrams1Lat);
+        dataSet2 = createDataSet(nGrams2Elapse, nGrams2Key, nGrams2Lat);
+        dataSet3 = createDataSet(nGrams3Elapse, nGrams3Key, nGrams3Lat);
 
-        console.log('Data set: ');
+        console.log('Data sets: ');
         console.log(dataSet1);
         console.log(dataSet2);
         console.log(dataSet3);
-
-        data.push(dataSet1);
-        data.push(dataSet2);
-        data.push(dataSet3);
-
-        var name = $("#inputName").val();
-
-        result.push(name);
-        result.push(name);
-        result.push(name);
-
-        console.log('data to bee sent to decision tree :');
-        console.log(data);
-        console.log(result);
 
     });
 
     $("#submit").click(function(){
 
-        localStorage.setItem("data", data);
-        localStorage.setItem("result", result);
+        var name = $("#inputName").val();
+        console.log(name);
+
+        if(dataSet1.length){
+            MainFactory.postPatterns(name, dataSet1.toString()).success(function(json){
+                console.log('Response for patterns dataset1', json);
+            })
+                .error(function(err){
+                    console.log('Error ', err);
+                });
+        }
+
+        if(dataSet2.length){
+            MainFactory.postPatterns(name, dataSet2.toString()).success(function(json){
+                console.log('Response for patterns dataset2', json);
+            })
+                .error(function(err){
+                    console.log('Error ', err);
+                });
+        }
+
+        if(dataSet3.length){
+            MainFactory.postPatterns(name, dataSet3.toString()).success(function(json){
+                console.log('Response for patterns dataset3', json);
+            })
+                .error(function(err){
+                    console.log('Error ', err);
+                });
+        }
 
         // re-initialize for next user
         textData1=[], textData2=[], textData3=[];
@@ -230,7 +299,7 @@ app.controller('MainController', function($scope){
     });
 
 
-});
+}]);
 
 function getLatency(textData){
     var nGramsLat=[];
@@ -302,14 +371,11 @@ function assignAverage(textData){
 }
 
 function createDataSet(nGramsElapse, nGramsKey, nGramsLat){
-    var temp=[];
     var dataSet=[];
     for(var i=0;i<nGramsElapse.length;i++){
-        temp.push(nGramsElapse[i]);
-        temp.push(nGramsKey[i]);
-        temp.push(nGramsLat[i]);
-
-        dataSet.push(temp);
+        dataSet.push(nGramsElapse[i]);
+        dataSet.push(nGramsKey[i]);
+        dataSet.push(nGramsLat[i]);
     }
 
     return dataSet;

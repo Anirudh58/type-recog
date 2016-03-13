@@ -190,6 +190,48 @@ app.controller('MainController', ['MainFactory', function(MainFactory, $scope){
             }
         });
 
+    var flag;
+    var temp;
+    var l=0;
+    var len=0;
+    var firstTime = true, currentTime;
+    var textData=[];
+
+    $('#test').keydown(function(evt) {
+            if((testText.charCodeAt(l)-32 == evt.which || (testText[l]==' ' && evt.which == 32)) && len==l){
+                flag=1;
+                if(evt.keyCode == 13) { // ignore enter
+                    console.log("ENTER ignored");
+                    return;
+                }
+                if(firstTime){
+                    currentTime = evt.timeStamp;
+                    firstTime=false;
+                }
+                textData.push({"scancode":evt.which, "timestamp":(evt.timeStamp-currentTime)});
+
+                temp=evt;
+
+                l++;
+                len++;
+            }
+            else if(evt.which==8){
+                len--;
+            }
+            else{
+                len++; // if he is making a mistake
+            }
+        })
+        .keyup(function(e){
+            if(flag==1){
+                console.log('key up ' + e.which);
+                console.log(e.which, ' pressed for time ', e.timeStamp - temp.timeStamp);
+
+                textData[textData.length-1].keyholdtime = e.timeStamp - temp.timeStamp;
+                flag=0;
+            }
+        });
+
 
     $('#ok').click(function(){
 
@@ -296,6 +338,63 @@ app.controller('MainController', ['MainFactory', function(MainFactory, $scope){
 
         firstTime1=true, firstTime2=true, firstTime3=true;
 
+    });
+
+    $('#predict').click(function(){
+       MainFactory.getAllPatterns().success(function(json){
+           console.log('response from get patterns ', json);
+
+           for(var i=0;i<json.length;i++){
+               var temp = json[i].pattern.split(',');
+               for(var j=0;j<temp.length;j++){
+                   temp[j]=parseInt(temp[j]);
+               }
+               console.log('temp', temp);
+               data.push(temp);
+               result.push(json[i].name);
+           }
+
+           var dt = new ml.DecisionTree({
+               data : data,
+               result : result
+           });
+
+           dt.build();
+
+           console.log(data, result);
+
+           // get test data
+           assignAverage(textData);
+           console.log('Test data' , textData);
+
+            //get elapsed time
+           var nGramsElapse = getElapseTimes(textData);
+           console.log('Elapse time', nGramsElapse);
+
+            //get keystroke duration
+           var nGramsKey = getKeystrokeDuration(textData);
+           console.log('Key stroke time', nGramsKey);
+
+           //get Latency for each n-gram
+           var nGramsLat = getLatency(textData);
+           console.log('Latency :', nGramsLat);
+
+           var dataSet = createDataSet(nGramsElapse, nGramsKey, nGramsLat);
+
+           console.log('test data ', dataSet);
+
+
+           // dt.print();
+
+           console.log("Classify : ", dt.classify(dataSet));
+
+           dt.prune(1.0); // 1.0 : mingain.
+           dt.print();
+
+           })
+           .error(function(err){
+               console.log('Error '. err);
+           })
     });
 
 

@@ -4,8 +4,23 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
 var routes = require('./routes/index');
+var mongodb = require('mongodb');
+var MongoClient = mongodb.MongoClient;
+
+var url="mongodb://localhost:27017/typerec";
+
+MongoClient.connect(url, function(err, db){
+  if(err){
+    console.log('Unable to connect to the mongodb server, Error ', err);
+  }
+
+  else{
+    console.log('Connection established to ', url);
+    db.close();
+  }
+});
+
 
 var app = express();
 

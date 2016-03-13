@@ -5,6 +5,9 @@ app.controller('MainController', function($scope){
     var textData2=[], firstTime2=true, currentTime2;
     var textData3=[], firstTime3=true, currentTime3;
 
+    var data=[];
+    var result=[];
+
     var testText="pumas are large cat like animals that are found in america when reports came into london zoo that a wild puma had been spotted forty five miles south of london they were not taken seriously";
 
     var flag1;
@@ -132,7 +135,7 @@ app.controller('MainController', function($scope){
         });
 
 
-    $('#ok').one("click", function(){
+    $('#ok').click(function(){
 
         // assign average keyhold time for characters which were left out
 
@@ -183,6 +186,47 @@ app.controller('MainController', function($scope){
         console.log(nGrams2Lat);
         console.log(nGrams3Lat);
 
+        var dataSet1 = createDataSet(nGrams1Elapse, nGrams1Key, nGrams1Lat);
+        var dataSet2 = createDataSet(nGrams2Elapse, nGrams2Key, nGrams2Lat);
+        var dataSet3 = createDataSet(nGrams3Elapse, nGrams3Key, nGrams3Lat);
+
+        console.log('Data set: ');
+        console.log(dataSet1);
+        console.log(dataSet2);
+        console.log(dataSet3);
+
+        data.push(dataSet1);
+        data.push(dataSet2);
+        data.push(dataSet3);
+
+        var name = $("#inputName").val();
+
+        result.push(name);
+        result.push(name);
+        result.push(name);
+
+        console.log('data to bee sent to decision tree :');
+        console.log(data);
+        console.log(result);
+
+    });
+
+    $("#submit").click(function(){
+
+        localStorage.setItem("data", data);
+        localStorage.setItem("result", result);
+
+        // re-initialize for next user
+        textData1=[], textData2=[], textData3=[];
+        i=0,j=0,k=0;
+        len1=0, len2=0, len3=0;
+
+        $('#test1').val('');
+        $('#test2').val('');
+        $('#test3').val('');
+
+        firstTime1=true, firstTime2=true, firstTime3=true;
+
     });
 
 
@@ -190,8 +234,15 @@ app.controller('MainController', function($scope){
 
 function getLatency(textData){
     var nGramsLat=[];
-    for(var i=1;i<textData.length;i++){
-        nGramsLat.push(textData[i].timestamp - (textData[i-1].timestamp + textData[i-1].keyholdtime));
+    nGramsLat.push((textData[1].timestamp - (textData[0].timestamp + textData[0].keyholdtime)) + (textData[1].timestamp - (textData[0].timestamp + textData[0].keyholdtime)));
+
+    for(var i=1;i<textData.length-2;i++){
+        var sum=0;
+        sum+=(textData[i].timestamp - (textData[i-1].timestamp + textData[i-1].keyholdtime));
+        sum+=(textData[i+1].timestamp - (textData[i].timestamp + textData[i].keyholdtime));
+        sum+=(textData[i+2].timestamp - (textData[i+1].timestamp + textData[i+1].keyholdtime));
+
+        nGramsLat.push(sum);
     }
 
     return nGramsLat;
@@ -249,22 +300,37 @@ function assignAverage(textData){
         }
     }
 }
-/*var data =[['slashdot','USA','yes',18],
- ['google','France','yes',23],
- ['digg','USA','yes',24],
- ['kiwitobes','France','yes',23],
- ['google','UK','no',21],
- ['(direct)','New Zealand','no',12],
- ['(direct)','UK','no',21],
- ['google','USA','no',24],
- ['slashdot','France','yes',19],
- ['digg','USA','no',18,],
- ['google','UK','no',18,],
- ['kiwitobes','UK','no',19],
- ['digg','New Zealand','yes',12],
- ['slashdot','UK','no',21],
- ['google','UK','yes',18],
- ['kiwitobes','France','yes',19]];
+
+function createDataSet(nGramsElapse, nGramsKey, nGramsLat){
+    var temp=[];
+    var dataSet=[];
+    for(var i=0;i<nGramsElapse.length;i++){
+        temp.push(nGramsElapse[i]);
+        temp.push(nGramsKey[i]);
+        temp.push(nGramsLat[i]);
+
+        dataSet.push(temp);
+    }
+
+    return dataSet;
+}
+
+/*var data =[[[10,11],[11,12,18]],
+ [[11,12],[12,13,23]],
+ [[11,13],[13,14,24]],
+ [[12,13],[11,12,14]],
+ [[12,14],[14,13,21]],
+ [[12,11],[11,13,12]],
+ [[13,14],[13,14,21]],
+ [[13,15],[14,15,24]],
+ [[13,14],[14,15,19]],
+ [[11,12],[14,15,18]],
+ [[11,15],[12,13,18]],
+ [[14,15],[15,16,19]],
+ [[15,16],[13,14,12]],
+ [[12,16],[14,16,21]],
+ [[13,15],[14,16,18]],
+ [[13,16],[15,16,19]]];
  var result = ['None','Premium','Basic','Basic','Premium','None','Basic','Premium','None','None','None','None','Basic','None','Basic','Basic'];
 
  var dt = new ml.DecisionTree({
@@ -276,7 +342,40 @@ function assignAverage(textData){
 
  // dt.print();
 
- console.log("Classify : ", dt.classify(['(direct)','USA','yes',5]));
+ console.log("Classify : ", dt.classify([[11,12],[12,13,14]]));
 
  dt.prune(1.0); // 1.0 : mingain.
  dt.print();*/
+
+/*
+var data =[['slashdot','USA','yes',18],
+    ['google','France','yes',23],
+    ['digg','USA','yes',24],
+    ['kiwitobes','France','yes',23],
+    ['google','UK','no',21],
+    ['(direct)','New Zealand','no',12],
+    ['(direct)','UK','no',21],
+    ['google','USA','no',24],
+    ['slashdot','France','yes',19],
+    ['digg','USA','no',18,],
+    ['google','UK','no',18,],
+    ['kiwitobes','UK','no',19],
+    ['digg','New Zealand','yes',12],
+    ['slashdot','UK','no',21],
+    ['google','UK','yes',18],
+    ['kiwitobes','France','yes',19]];
+var result = ['None','Premium','Basic','Basic','Premium','None','Basic','Premium','None','None','None','None','Basic','None','Basic','Basic'];
+
+var dt = new ml.DecisionTree({
+    data : data,
+    result : result
+});
+
+dt.build();
+
+// dt.print();
+
+console.log("Classify : ", dt.classify(['(direct)','USA','yes',5]));
+
+dt.prune(1.0); // 1.0 : mingain.
+dt.print();*/

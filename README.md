@@ -1,7 +1,7 @@
 # Typing Pattern Recognizer
 
 <h3> Introduction </h3>
-  <p> This app tries to the fact that every person has a unique typing pattern and possibly predict who the typist is after learning from a data set </p>
+  <p> This app tries to utilise the fact that every person has a unique typing pattern and possibly predict who the typist is after learning from a data set </p>
   
 <h3> The method used </h3>
   <ul>
